@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.camunda.bpm.model:camunda-xml-model:7.7.0-alpha1">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/camunda/bpm/model/camunda-xml-model/7.7.0-alpha1/camunda-xml-model-7.7.0-alpha1.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/camunda/bpm/model/camunda-xml-model/7.7.0-alpha1/camunda-xml-model-7.7.0-alpha1-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/camunda/bpm/model/camunda-xml-model/7.7.0-alpha1/camunda-xml-model-7.7.0-alpha1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

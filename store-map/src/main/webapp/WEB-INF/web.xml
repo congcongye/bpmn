@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://java.sun.com/xml/ns/javaee"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+         id="WebApp_ID" version="2.5">
+
+  <display-name>store-map</display-name>
+
+  <servlet>
+   <servlet-name>ServletStoreData</servlet-name>
+    <servlet-class>servlet.ServletStoreData</servlet-class>
+  </servlet>
+   <servlet-mapping>
+     <servlet-name>ServletStoreData</servlet-name>
+     <url-pattern>/ServletStoreData</url-pattern>
+   </servlet-mapping>
+
+    <servlet>
+        <servlet-name>ServletCheckData</servlet-name>
+        <servlet-class>servlet.ServletCheckData</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ServletCheckData</servlet-name>
+        <url-pattern>/ServletCheckData</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>ServletExclusive</servlet-name>
+        <servlet-class>servlet.ServletExclusive</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ServletExclusive</servlet-name>
+        <url-pattern>/ServletExclusive</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>ServletInputData</servlet-name>
+        <servlet-class>servlet.ServletInputData</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ServletInputData</servlet-name>
+        <url-pattern>/ServletInputData</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>ServletStoreOutputData</servlet-name>
+        <servlet-class>servlet.ServletStoreOutputData</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ServletStoreOutputData</servlet-name>
+        <url-pattern>/ServletStoreOutputData</url-pattern>
+    </servlet-mapping>
+
+
+</web-app>
