@@ -1,39 +1,50 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<html>
+
+
+
+
+
+
+
+
+
+
+
 <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <script type="text/javascript" src="jquery-1.8.3.js"></script>
-    <link href="css/bootstrap.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="css/font-awesome.min.css" />
-    <link rel="stylesheet" href="css/font-awesome-ie7.min.css" />
-    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:400,300" />
-    <link rel="stylesheet" href="css/ace.min.css" />
-    <link rel="stylesheet" href="css/ace-rtl.min.css" />
-    <link rel="stylesheet" href="css/ace-skins.min.css" />
-    <link rel="stylesheet" href="css/ace-ie.min.css" />
-    <script src="js/ace-extra.min.js"></script>
-    <script src="js/respond.min.js"></script>
 </head>
 <body>
+<h1>task name dfad</h1>
+<script>
+    myWindow =window.open('400','300','width=600,height=600')
+    myWindow.document.write("<script type="text/javascript" src="jquery-1.8.3.js"></script>
+<link href="css/bootstrap.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="css/font-awesome.min.css" />
+<link rel="stylesheet" href="css/font-awesome-ie7.min.css" />
+<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:400,300" />
+<link rel="stylesheet" href="css/ace.min.css" />
+<link rel="stylesheet" href="css/ace-rtl.min.css" />
+<link rel="stylesheet" href="css/ace-skins.min.css" />
+<link rel="stylesheet" href="css/ace-ie.min.css" />
+<script src="js/ace-extra.min.js"></script>
+<script src="js/respond.min.js"></script>
+<nav><a href="hello.jsp?id=Task_4&condition=Yes">Package Order</a> <a href="hello.jsp?id=Task_3&condition=Yes">Check Credit</a>
+    <a href="hello.jsp?id=Task_2&condition=Yes">Create Sales Order</a> <a href="hello.jsp?id=Task_6&condition=Yes">Ship Order</a> </nav>
+<table border=2><tr><th>packing_list_id</th><th>totals</th><th>consignee</th><th>__warehouse_id</th><th>sales_order_id</th><th>__receive_date</th>
+    <th>containers</th><th>packing_date</th><th>state</th><th>method</th></tr></table><input type=hidden id=nextid value=EndEvent_2 >
+<input type=hidden id=taskid value=Task_6><input type=hidden id=outputName value=delivery_order><input type=hidden id=tableName value=packing_list>
 
-    <form  name="createData" action="/sqb-store-map/ServletStoreData" method="post" class="form-group">
-        <div class="row" center>
-        <lable class="col-xs-1">Id</lable>  <input type=text name=Id class="col-xs-2"><br>
-        </div>
-        <div class="row">
-        <lable class="col-xs-1"> Time </lable> <input type=text name=Time class="col-xs-2"><br>
-        </div>
-        <%--UserId  <input type=text name=UserId><br>--%>
-        <%--Number  <input type=text name=Number><br>--%>
-        <input type="hidden" name="tablename" value="bpmnOrder">
-        <input type="hidden" name="nextid" value="Task_3">
-        <input type="hidden" name="eventid" value="">
-        <input type=submit name=Sure value=Sure class="col-xs-2" style="left:40px"/><br>
-
-    </form>
-
+<script>
+    $(".myButton").click(function(){
+        var data=$(this).parent().parent().find("td").find("input").val();
+        var nextid=$("#nextid").val();
+        var taskid=$("#taskid").val();
+        var outputName=$("#outputName").val();
+        var tableName=$("#tableName").val();
+        window.location.href='/sqb-store-map/ServletInputData?dataid='+data+"&nextid="+nextid+"&taskid="+taskid+"&outputName="+outputName+"&tableName="+tableName;
+    });
+</script>")
+</script>
 
 
 </body>
-
-
-</html>

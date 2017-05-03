@@ -1,19 +1,23 @@
 package com.wosai.sqb.storemap;
+import model.ForeignKeyModel;
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by ycc on 17/4/11.
  */
 public class DataProcess {
 
+    Map<String, ForeignKeyModel> foreignKeyModelMap =null;
     Connection conn=DBConnection.getConn();
+    String menue="";
+    public DataProcess(){
+        getMenu();
+    }
     /**
      * 根据表名和属性名称和数据状态,将数据库中该表的数据
      * @param tableName
@@ -50,7 +54,7 @@ public class DataProcess {
     public List<String> getAttributeByTableName(String tableName){
         Statement st=null;
         List<String> result =new ArrayList<String>();
-        String sql ="select COLUMN_NAME from information_schema.COLUMNS where  table_schema='bpmn' and table_name = '"+tableName+"';";
+        String sql ="select COLUMN_NAME from information_schema.COLUMNS where  table_schema='purchase' and table_name = '"+tableName+"';";
         try {
             st = conn.createStatement();
             ResultSet rs = st.executeQuery(sql);
@@ -68,7 +72,7 @@ public class DataProcess {
      * @param list
      * @return
      */
-    public String drawHtmlLabel(List<String> list,String taskid,String nextid,String tablename){
+    public String drawHtmlLabel(List<String> list,String taskid,String nextid,String tablename,String taskname){
         StringBuffer sb =new StringBuffer();
         sb.append("<script type=\"text/javascript\" src=\"jquery-1.8.3.js\"></script>\n" +
                 "    <link href=\"css/bootstrap.min.css\" rel=\"stylesheet\" />\n" +
@@ -81,9 +85,11 @@ public class DataProcess {
                 "    <link rel=\"stylesheet\" href=\"css/ace-ie.min.css\" />\n" +
                 "    <script src=\"js/ace-extra.min.js\"></script>\n" +
                 "    <script src=\"js/respond.min.js\"></script>");
+        sb.append("<h1>"+taskname+"</h1>");
+        sb.append(menue);
         sb.append("<form  name=\"createData\" action=\"/sqb-store-map/ServletStoreData\" method=\"post\">");
         for(int i=0;i<list.size()-1;i++){
-            sb.append("<div class='row'><label class='col-xs-1'>"+list.get(i)+"</label> <input type=text name="+list.get(i)+ " class=col-xs-2><br> </div>  ");
+            sb.append("<div class='row'><label class='col-xs-2'>"+list.get(i)+"</label> <input type=text name="+list.get(i)+ " class=col-xs-2><br> </div>  ");
         }
         sb.append("<input type=\"hidden\" name=\"tablename\" value=\""+tablename+"\">\n" +
                 "    <input type=\"hidden\" name=\"nextid\" value=\""+nextid+"\">\n" +"  <input type=\"hidden\" name=\"eventid\" value="+taskid+">"+
@@ -114,7 +120,7 @@ public class DataProcess {
      * @param list
      * @return
      */
-    public String drawTableData(List<HashMap<String,Object>> data,List<String> list,String nextid,String taskid){
+    public String drawTableData(List<HashMap<String,Object>> data,List<String> list,String nextid,String taskid,String tableName,String taskname){
         StringBuffer sb=new StringBuffer();
         sb.append("<script type=\"text/javascript\" src=\"jquery-1.8.3.js\"></script>\n" +
                 "    <link href=\"css/bootstrap.min.css\" rel=\"stylesheet\" />\n" +
@@ -127,6 +133,8 @@ public class DataProcess {
                 "    <link rel=\"stylesheet\" href=\"css/ace-ie.min.css\" />\n" +
                 "    <script src=\"js/ace-extra.min.js\"></script>\n" +
                 "    <script src=\"js/respond.min.js\"></script>");
+        sb.append("<h1>"+taskname+"</h1>");
+        sb.append(menue);
         sb.append("<table border=2><tr>");
         for(int i=0;i<list.size();i++){//画出表头
             sb.append("<th>"+list.get(i)+"</th>");
@@ -136,7 +144,7 @@ public class DataProcess {
         for(HashMap<String,Object> map:data){
             sb.append("<tr>");
             for(String string:list){
-                if(string.toLowerCase().equals("id")){
+                if(string.toLowerCase().equals(tableName+"_id")){
                     sb.append("<td><input type=text readonly=readonly value="+map.get(string)+"></td>");
                 }else{
                     sb.append("<td>"+map.get(string)+"</td>");
@@ -145,14 +153,16 @@ public class DataProcess {
             sb.append("<td> <input type=button class=myButton value=check ></td></tr>");
         }
         sb.append("</table>");
-        sb.append("<input type=hidden id=nextid value="+nextid+" >\n" + "<input type=hidden id=taskid value="+taskid+">");
+        sb.append("<input type=hidden id=nextid value="+nextid+" >\n" + "<input type=hidden id=taskid value="+taskid+">"+ "<input type=hidden id=tableName value="+tableName+">");
         sb.append("<script>\n $(\".myButton\").click(function(){\n" +
                 "        var data=$(this).parent().parent().find(\"td\").find(\"input\").val();\n" +
                 "        var nextid=$(\"#nextid\").val();\n" +
                 "        var taskid=$(\"#taskid\").val();\n" +
-                "        window.location.href='/sqb-store-map/ServletCheckData?dataid='+data+\"&nextid=\"+nextid+\"&taskid=\"+taskid;\n" +
+                "        var tableName=$(\"#tableName\").val();\n"+
+                "        window.location.href='/sqb-store-map/ServletCheckData?dataid='+data+\"&nextid=\"+nextid+\"&taskid=\"+taskid+\"&tableName=\"+tableName;"+
                 "    });\n" +
                 "</script>");
+
         return sb.toString();
     }
 
@@ -162,7 +172,7 @@ public class DataProcess {
      * @return
      */
 
-    public String drawOutputLabel(List<String> list,String taskid,String nextid,String outputName,String dataid,String inputName){
+    public String drawOutputLabel(List<String> list,String taskid,String nextid,String outputName,String dataid,String inputName,String taskname){
         StringBuffer sb =new StringBuffer();
         sb.append("<script type=\"text/javascript\" src=\"jquery-1.8.3.js\"></script>\n" +
                 "    <link href=\"css/bootstrap.min.css\" rel=\"stylesheet\" />\n" +
@@ -175,9 +185,11 @@ public class DataProcess {
                 "    <link rel=\"stylesheet\" href=\"css/ace-ie.min.css\" />\n" +
                 "    <script src=\"js/ace-extra.min.js\"></script>\n" +
                 "    <script src=\"js/respond.min.js\"></script>");
+        sb.append("<h1>"+taskname+"</h1>");
+        sb.append(menue);
         sb.append("<form  name=\"createData\" action=\"/sqb-store-map/ServletStoreOutputData\" method=\"post\">");
         for(int i=0;i<list.size()-1;i++){
-            sb.append("<div class='row'><label class='col-xs-1'>"+list.get(i)+"</label> <input type=text name="+list.get(i)+ " class=col-xs-2><br> </div>  ");
+            sb.append("<div class='row'><label class='col-xs-2'>"+list.get(i)+"</label> <input type=text name="+list.get(i)+ " class=col-xs-2><br> </div>  ");
         }
         sb.append("<input type=\"hidden\" name=\"outputName\" value=\""+outputName+"\">\n" +
                 "    <input type=\"hidden\" name=\"nextid\" value=\""+nextid+"\">\n" +"<input type=\"hidden\" name=\"taskid\" value="+taskid+">"+
@@ -186,7 +198,7 @@ public class DataProcess {
         return sb.toString();
     }
 
-    public String drawInputTableData(List<HashMap<String,Object>> data,List<String> list,String nextid,String taskid,String outputName){
+    public String drawInputTableData(List<HashMap<String,Object>> data,List<String> list,String nextid,String taskid,String outputName,String dataName,String taskname){
         StringBuffer sb=new StringBuffer();
         sb.append("<script type=\"text/javascript\" src=\"jquery-1.8.3.js\"></script>\n" +
                 "    <link href=\"css/bootstrap.min.css\" rel=\"stylesheet\" />\n" +
@@ -200,6 +212,8 @@ public class DataProcess {
                 "    <script src=\"js/ace-extra.min.js\"></script>\n" +
                 "    <script src=\"js/respond.min.js\"></script>");
 //        sb.append("<script type=\"text/javascript\" src=\"jquery-1.8.3.js\"></script>");
+        sb.append("<h1>"+taskname+"</h1>");
+        sb.append(menue);
         sb.append("<table border=2><tr>");
         for(int i=0;i<list.size();i++){//画出表头
             sb.append("<th>"+list.get(i)+"</th>");
@@ -209,7 +223,7 @@ public class DataProcess {
         for(HashMap<String,Object> map:data){
             sb.append("<tr>");
             for(String string:list){
-                if(string.toLowerCase().equals("id")){
+                if(string.toLowerCase().equals(dataName+"_id")){
                     sb.append("<td><input type=text readonly=readonly value="+map.get(string)+"></td>");
                 }else{
                     sb.append("<td>"+map.get(string)+"</td>");
@@ -218,16 +232,77 @@ public class DataProcess {
             sb.append("<td> <input type=button class=myButton value=check ></td></tr>");
         }
         sb.append("</table>");
-        sb.append("<input type=hidden id=nextid value="+nextid+" >\n" + "<input type=hidden id=taskid value="+taskid+">"+ "<input type=hidden id=outputName value="+outputName+">");
+        sb.append("<input type=hidden id=nextid value="+nextid+" >\n" + "<input type=hidden id=taskid value="+taskid+">"+ "<input type=hidden id=outputName value="+outputName+">"+ "<input type=hidden id=tableName value="+dataName+">");
         sb.append("<script>\n $(\".myButton\").click(function(){\n" +
                 "        var data=$(this).parent().parent().find(\"td\").find(\"input\").val();\n" +
                 "        var nextid=$(\"#nextid\").val();\n" +
                 "        var taskid=$(\"#taskid\").val();\n" +
                 "        var outputName=$(\"#outputName\").val();\n" +
-                "        window.location.href='/sqb-store-map/ServletInputData?dataid='+data+\"&nextid=\"+nextid+\"&taskid=\"+taskid+\"&outputName=\"+outputName;   \n"+
+                "        var tableName=$(\"#tableName\").val();\n" +
+                "        window.location.href='/sqb-store-map/ServletInputData?dataid='+data+\"&nextid=\"+nextid+\"&taskid=\"+taskid+\"&outputName=\"+outputName+\"&tableName=\"+tableName;\n"+
                 "    });\n" +
                 "</script>");
-
         return sb.toString();
     }
+
+    public void getForeignColumn(String databaseName){
+        foreignKeyModelMap=new HashMap<String,ForeignKeyModel>();
+        Statement st=null;
+        String sql="SELECT k.TABLE_NAME,k.column_name,k.REFERENCED_TABLE_NAME,K.REFERENCED_COLUMN_NAME\n" +
+                "FROM information_schema.table_constraints t\n" +
+                "JOIN information_schema.key_column_usage k\n" +
+                "USING (constraint_name,table_schema,table_name)\n" +
+                "WHERE t.constraint_type='FOREIGN KEY'\n" +
+                "  AND t.table_schema="+databaseName+";";
+        try {
+            st = conn.createStatement();
+            ResultSet rs = st.executeQuery(sql);
+            while(rs.next()){
+                ForeignKeyModel model=new ForeignKeyModel();
+                model.tableName=(String)rs.getObject(1);
+                model.columnName=(String)rs.getObject(2);
+                model.referenceTableName=(String)rs.getObject(3);
+                model.referenceColumnName=(String)rs.getObject(4);
+                foreignKeyModelMap.put(model.tableName+"_"+model.columnName,model);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+    /**
+     * 根据table的名字找到某个数据库表中的所有外键信息
+     * @param key
+     * @return
+     */
+    public  List<ForeignKeyModel> likeString(String key,String dataBaseName) {
+        if(foreignKeyModelMap.isEmpty()){
+            getForeignColumn(dataBaseName);
+        }
+        List<ForeignKeyModel> list = new ArrayList<ForeignKeyModel>();
+        Iterator it = foreignKeyModelMap.entrySet().iterator();
+        while(it.hasNext()) {
+            Map.Entry<String, ForeignKeyModel> entry = (Map.Entry<String, ForeignKeyModel>)it.next();
+            if (entry.getKey().indexOf(key) != -1) {
+                list.add(entry.getValue());
+            }
+        }
+        return list;
+    }
+
+
+    public String getMenu(){
+        ProcessBpmn processBpmn=new ProcessBpmn();
+        Map<String,String> map = processBpmn.getTaskIdAndName();
+        StringBuffer sb =new StringBuffer();
+        sb.append("<nav>");
+        for(Map.Entry<String,String> entry:map.entrySet()){
+            sb.append("<a href=\"hello.jsp?id="+entry.getKey()+"&condition=Yes\">"+entry.getValue()+"</a> ");
+        }
+        sb.append("</nav>");
+        menue=sb.toString();
+        return menue;
+    }
+
 }

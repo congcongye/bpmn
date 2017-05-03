@@ -28,11 +28,11 @@ public class ServletCheckData extends HttpServlet {
 
         response.setContentType("text/html;charser=UTF-8");
         ProcessBpmn pb=new ProcessBpmn();
-        HttpSession session=request.getSession();
+//        HttpSession session=request.getSession();
         String dataid=request.getParameter("dataid");
         String nextid=request.getParameter("nextid");
         String taskid=request.getParameter("taskid");
-        String tableName=(String)session.getAttribute("data");
+        String tableName=request.getParameter("tableName");
 //        String state=(String)session.getAttribute("state");
         String state=pb.getStateByTaskId(taskid);
         //改变数据状态
@@ -40,12 +40,12 @@ public class ServletCheckData extends HttpServlet {
         Connection conn= DBConnection.getConn();
         try {
             st = conn.createStatement();
-            String sql = "update "+tableName+" set state = "+state +" where id="+dataid;
-//            System.out.println("sql: "+sql);
+            String sql = "update "+tableName+" set state = "+state +" where "+tableName+"_id="+dataid;
+            System.out.println("sql: "+sql);
             int result = st.executeUpdate(sql);
             if(result>0){
-                session.setAttribute("data",tableName);
-                session.setAttribute("state",state);
+//                session.setAttribute("data",tableName);
+//                session.setAttribute("state",state);
                 request.getRequestDispatcher("hello.jsp?id="+nextid+"&condition=Yes").forward(request,response);
             }
         } catch (SQLException e) {

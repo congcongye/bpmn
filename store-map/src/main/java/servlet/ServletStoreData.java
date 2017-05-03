@@ -30,7 +30,7 @@ public class ServletStoreData extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html;charser=UTF-8");
-        HttpSession session=request.getSession();
+//        HttpSession session=request.getSession();
         String tableName=request.getParameter("tablename");
         String nextid=request.getParameter("nextid");
         String eventid=request.getParameter("eventid");
@@ -49,12 +49,12 @@ public class ServletStoreData extends HttpServlet {
         try {
             st = conn.createStatement();
             String sql = "insert into "+tableName+" values ("+data+");";
-//            System.out.println("sql: "+sql);
+            System.out.println("sql: "+sql);
             int result = st.executeUpdate(sql);
             if(result>0){ //数据插入数据库成功
                 //更新session,同时跳转到hello.jsp页面
-                session.setAttribute("data",tableName);
-                session.setAttribute("state",state);
+//                session.setAttribute("data",tableName);
+//                session.setAttribute("state",state);
 //                System.out.println("text");
                 request.getRequestDispatcher("hello.jsp?id="+nextid+"&condition=Yes").forward(request,response);
 //                response.sendRedirect("hello.jsp");

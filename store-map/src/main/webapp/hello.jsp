@@ -2,16 +2,17 @@
 <%@ page import="com.wosai.sqb.storemap.*" %>
 <%@ page import="java.util.*" %>
 <%@ page import="java.util.HashMap"%>
+<%@ page import="dataService.tableAnalyzer.DBTable" %>
+<%@ page import="java.io.File" %>
+<%@ page import="java.io.FileInputStream" %>
+<%@ page import="java.io.FileOutputStream" %>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <script type="text/javascript" src="jquery-1.8.3.js"></script>
 </head>
 <body>
-<div id="createData" >
-
-</div>
 <%
     String startEventId =request.getParameter("id");
     String condition =request.getParameter("condition");
@@ -21,72 +22,74 @@
     }
     ProcessBpmn pb =new ProcessBpmn();
     DataProcess dp =new DataProcess();
+//    String menu =dp.getMenu();
     Map<String,Object> map = pb.getNext(startEventId,condition);
     if(map!=null) {
         String type = (String) map.get("type");
         String nextId = (String) map.get("nextid");
+        String taskName=(String) map.get("taskName");
         if (type.equals("start")) {%>
-        start;
-       <%
-          request.getRequestDispatcher("hello.jsp?id="+nextId+"&condition=Yes").forward(request,response);
-      }else if(type.equals("end")){%>
-           process end
-          <script>alert('process ends')</script>
-      <%} else if(type.equals("exclusive")){
-          request.getRequestDispatcher("exclusive.jsp?id="+startEventId).forward(request,response);
-      }else if(type.equals("task")){
-            Collection<String> inputs =pb.getInputData(startEventId,1);
-            Collection<String> outputs =pb.getInputData(startEventId,2);
-           if(inputs.size()==0&&outputs.size()==0){ //没有输入,没有输出
-               String data=(String) session.getAttribute("data");//获得当前tablename
-               String state=(String) session.getAttribute("state");//数据当前的状态
-               if(data==null){%>
-                   alert("bpmn 文件格式有问题");
-               <% }else{
-                   List<String> label=dp.getAttributeByTableName(data);
-                   List<HashMap<String,Object>> tableValues=dp.getValueByTableName(data,label,state);
-                   String result=dp.drawTableData(tableValues,label,nextId,startEventId);
-               %>
-                <script>
-                myWindow =window.open('','','width=600,height=600')
-                myWindow.document.write("<%=result%>")
-                </script>
-                <%
-               }
-           }
-           if(inputs.size()==0&&outputs.size()!=0){ //没有输入,有输出,分成两种情况,session有data属性和session中没有data属性
-               String data=(String)session.getAttribute("data");
-               if(data==null){
-                   List<String> list =new ArrayList<String>();
-                   list.addAll(dp.getAttributeByTableName("bpmnOrder"));//等数据库建好后,用后面注释的替换该句
-//                   for(String string:outputs){
-//                       list.addAll(dp.getAttributeByTableName(string));
-//                   }
-                   String result=dp.drawHtmlLabel(list,startEventId,nextId,"bpmnOrder");//bpmnOrder以后替换成outputs.get(0);
-                   %>
-                   <script>
-                       myWindow =window.open('','','width=300,height=600')
-                       myWindow.document.write("<%=result%>")
-                   </script>
+            start;
+        <%request.getRequestDispatcher("hello.jsp?id="+nextId+"&condition=Yes").forward(request,response);
+        }else if(type.equals("end")){%>
+            process end
+        <script>alert('process ends')</script>
+        <%} else if(type.equals("exclusive")){
+            request.getRequestDispatcher("exclusive.jsp?id="+startEventId).forward(request,response);
+        }else if(type.equals("task")){
+            Collection<String> inputs =pb.getInputData(startEventId);
+            Collection<String> outputs =pb.getOutPutData(startEventId);
+            if(inputs.size()==0&&outputs.size()==0){ //没有输入,没有输出
+         %>
+                alert("bpmn 文件格式有问题");
+         <%}
+            if(inputs.size()==0&&outputs.size()!=0){ //没有输入,有输出,开始task
+                List<String> list =new ArrayList<String>();
+                for(String string:outputs){
+                list.addAll(dp.getAttributeByTableName(pb.escape(string)));
+                }
+                String tableName =pb.escape(outputs.iterator().next());
+                String result=dp.drawHtmlLabel(list,startEventId,nextId,tableName,taskName);
 
-              <% }else{
-                  String tablename="bpmnOrder";//data;
-                  String state=(String)session.getAttribute("state");
-                  List<String> label=dp.getAttributeByTableName(tablename);
-                  List<HashMap<String,Object>> tableValues=dp.getValueByTableName(tablename,label,state);
-                  String result=dp.drawInputTableData(tableValues,label,nextId,startEventId,"packOrder");//将packOrder换成outputs.iterator().next()
-                  %>
-                <script>
-                   myWindow =window.open('400','300','width=600,height=600')
-                   myWindow.document.write("<%=result%>")
-                </script>
-              <%
-               }
-           }
-      }
-    }
+        %>
+       <script>
+        myWindow =window.open('','','width=300,height=600')
+        myWindow.document.write("<%=result%>")
+        </script>
+        <%
+        } if(inputs.size()!=0&&outputs.size()==0){ //check operation
+            String tableName=pb.escape(inputs.iterator().next());
+            List<String> label=dp.getAttributeByTableName(tableName);
+            String preTaskId=pb.getPreId(startEventId);//preview task id
+            String state =pb.getStateByTaskId(preTaskId);
+            List<HashMap<String,Object>> tableValues=dp.getValueByTableName(tableName,label,state);
+            String result=dp.drawTableData(tableValues,label,nextId,startEventId,tableName,taskName);
+        %>
+        <script>
+             myWindow =window.open('','','width=300,height=600')
+             myWindow.document.write("<%=result%>")
+        </script>
+        <%
+        }  if(inputs.size()!=0&& outputs.size()!=0){  //check + input
+            String tablename=pb.escape(inputs.iterator().next());
+            String preTaskId=pb.getPreId(startEventId);//preview task id
+            String state =pb.getStateByTaskId(preTaskId);
+            List<String> label=dp.getAttributeByTableName(tablename);
+            List<HashMap<String,Object>> tableValues=dp.getValueByTableName(tablename,label,state);
+            String outputTableName =pb.escape(outputs.iterator().next());
+            String result=dp.drawInputTableData(tableValues,label,nextId,startEventId,outputTableName,tablename,taskName);//将packOrder换成outputs.iterator().next()
 
-%>
+        %>
+        <script>
+            myWindow =window.open('400','300','width=600,height=600')
+            myWindow.document.write("<%=result%>")
+        </script>
+        <%
+        }
+        }
+        }
+        else{%>
+          alert("next task is null");
+        <%}%>
+
 </body>
-
-</html>
