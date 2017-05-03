@@ -35,10 +35,11 @@ public class ServletInputData extends HttpServlet {
         String nextid=request.getParameter("nextid");
         String taskid=request.getParameter("taskid");
         String outputName=request.getParameter("outputName");
+        String taskname=request.getParameter("taskname");
         List<String> lableNames=dataProcess.getAttributeByTableName(outputName);
 //        String inputName=(String)session.getAttribute("data");
         String inputName=request.getParameter("tableName");
-        String htmlPage=dataProcess.drawOutputLabel(lableNames,taskid,nextid,outputName,dataid,inputName);
+        String htmlPage=dataProcess.drawOutputLabel(lableNames,taskid,nextid,outputName,dataid,inputName,taskname);
         PrintWriter out = response.getWriter();
         out.print("<html>"+htmlPage+"</html>");
     }

@@ -10,7 +10,7 @@ import java.sql.Statement;
  */
 public class DBConnection {
     private static String dbDriver="com.mysql.jdbc.Driver";
-    private static String dbUrl="jdbc:mysql://localhost:3306/purchase?useUnicode=yes&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull";//根据实际情况变化
+    private static String dbUrl="jdbc:mysql://localhost:3306/paper?useUnicode=yes&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull";//根据实际情况变化
 
     private static String dbUser="root";
     private static String dbPass="123456";

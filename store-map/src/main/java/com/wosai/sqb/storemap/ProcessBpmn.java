@@ -21,7 +21,7 @@ import org.codehaus.jackson.type.TypeReference;
  * Created by ycc on 17/3/31.
  */
 public class ProcessBpmn {
-    String filePath = "order_process.bpmn";
+    String filePath = "paper.bpmn";
     BpmnModelInstance modelInstance=null;
     Collection<ModelElementInstance> sequenceInstances=null;
     Collection<ModelElementInstance> startInstances=null;
@@ -230,15 +230,24 @@ public class ProcessBpmn {
         }else if(et.equals(exclusiveGatewayType)){
             ExclusiveGateway exclusiveGateway =(ExclusiveGateway)e;
             Collection<SequenceFlow> outgoings =exclusiveGateway.getOutgoing();
-            for(SequenceFlow sq:outgoings){
-                if(sq.getAttributeValue("name").equals(conditionFlag)){ // if conditionflag equals sq's name
-                    String target =sq.getAttributeValue("targetRef");
-                    result.put("type","exclusive");
-                    result.put("nextid",target);
-                    result.put("taskName",taskName);
-                    return result;
+            if(outgoings.size()==1){
+                String target =outgoings.iterator().next().getAttributeValue("targetRef");
+                result.put("type","exclusive");
+                result.put("nextid",target);
+                result.put("taskName",taskName);
+                return result;
+            }else{
+                for(SequenceFlow sq:outgoings){
+                    if(sq.getAttributeValue("name").equals(conditionFlag)){ // if conditionflag equals sq's name
+                        String target =sq.getAttributeValue("targetRef");
+                        result.put("type","exclusive");
+                        result.put("nextid",target);
+                        result.put("taskName",taskName);
+                        return result;
+                    }
                 }
             }
+
         }else  if(et.equals(taskType)) {
             String name = e.getAttributeValue("name").toString();// the name of the action
             ActivityImpl activity = (ActivityImpl) e;
@@ -379,10 +388,20 @@ public class ProcessBpmn {
                         return input;
                     }else if(preType.equals(exclusiveGatewayType)){
                         preId=getPreId(preId);
+                        ModelElementType tempPre =modelInstance.getModelElementById(preId).getElementType();
+                        while(!tempPre.equals(taskType)){
+                            preId=getPreId(preId);
+                            tempPre=modelInstance.getModelElementById(preId).getElementType();
+                        }
                     }else if(preType.equals(taskType)){
                         input =getOutPutData(preId);
                         if(input.size()==0){
                             preId=getPreId(preId);
+                            ModelElementType tempPre =modelInstance.getModelElementById(preId).getElementType();
+                            while(!tempPre.equals(taskType)){
+                                preId=getPreId(preId);
+                                tempPre=modelInstance.getModelElementById(preId).getElementType();
+                            }
                         }
                     }
                     input=getOutPutData(preId);

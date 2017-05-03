@@ -54,7 +54,7 @@ public class DataProcess {
     public List<String> getAttributeByTableName(String tableName){
         Statement st=null;
         List<String> result =new ArrayList<String>();
-        String sql ="select COLUMN_NAME from information_schema.COLUMNS where  table_schema='purchase' and table_name = '"+tableName+"';";
+        String sql ="select COLUMN_NAME from information_schema.COLUMNS where  table_schema='paper' and table_name = '"+tableName+"';";
         try {
             st = conn.createStatement();
             ResultSet rs = st.executeQuery(sql);
@@ -66,6 +66,8 @@ public class DataProcess {
         }
         return result;
     }
+
+    
 
     /**
      * 根据表的列名,进行网页的拼接,返回属性以及对应的输入框
@@ -85,15 +87,18 @@ public class DataProcess {
                 "    <link rel=\"stylesheet\" href=\"css/ace-ie.min.css\" />\n" +
                 "    <script src=\"js/ace-extra.min.js\"></script>\n" +
                 "    <script src=\"js/respond.min.js\"></script>");
-        sb.append("<h1>"+taskname+"</h1>");
+        sb.append("<h1 center>"+taskname+"</h1>");
+        sb.append("<div class=\"row\"><div class=\"col-xs-2\">");
         sb.append(menue);
+        sb.append("</div><div class=\"col-xs-10\">");
         sb.append("<form  name=\"createData\" action=\"/sqb-store-map/ServletStoreData\" method=\"post\">");
         for(int i=0;i<list.size()-1;i++){
-            sb.append("<div class='row'><label class='col-xs-2'>"+list.get(i)+"</label> <input type=text name="+list.get(i)+ " class=col-xs-2><br> </div>  ");
+            sb.append("<div class='row'><label class='col-xs-3'>"+list.get(i)+"</label> <input type=text name="+list.get(i)+ " class=col-xs-3><br> </div>  ");
         }
         sb.append("<input type=\"hidden\" name=\"tablename\" value=\""+tablename+"\">\n" +
                 "    <input type=\"hidden\" name=\"nextid\" value=\""+nextid+"\">\n" +"  <input type=\"hidden\" name=\"eventid\" value="+taskid+">"+
-                "    <input type=submit name=Sure value=Sure class=\"col-xs-1\" style=\"left:40px\" /><br></form>");
+                "    <input type=submit name=Sure value=Sure class=\"col-xs-2\" style=\"left:40px\" /><br></form>");
+        sb.append("</div></div>");
         return sb.toString();
     }
 
@@ -133,8 +138,10 @@ public class DataProcess {
                 "    <link rel=\"stylesheet\" href=\"css/ace-ie.min.css\" />\n" +
                 "    <script src=\"js/ace-extra.min.js\"></script>\n" +
                 "    <script src=\"js/respond.min.js\"></script>");
-        sb.append("<h1>"+taskname+"</h1>");
+        sb.append("<h1 class=center>"+taskname+"</h1>");
+        sb.append("<div class=\"row\"><div class=\"col-xs-2\">");
         sb.append(menue);
+        sb.append("</div><div class=\"col-xs-10\">");
         sb.append("<table border=2><tr>");
         for(int i=0;i<list.size();i++){//画出表头
             sb.append("<th>"+list.get(i)+"</th>");
@@ -162,7 +169,7 @@ public class DataProcess {
                 "        window.location.href='/sqb-store-map/ServletCheckData?dataid='+data+\"&nextid=\"+nextid+\"&taskid=\"+taskid+\"&tableName=\"+tableName;"+
                 "    });\n" +
                 "</script>");
-
+          sb.append("</div></div");
         return sb.toString();
     }
 
@@ -185,16 +192,19 @@ public class DataProcess {
                 "    <link rel=\"stylesheet\" href=\"css/ace-ie.min.css\" />\n" +
                 "    <script src=\"js/ace-extra.min.js\"></script>\n" +
                 "    <script src=\"js/respond.min.js\"></script>");
-        sb.append("<h1>"+taskname+"</h1>");
+        sb.append("<h1 class=center>"+taskname+"</h1>");
+        sb.append("<div class=\"row\"><div class=\"col-xs-2\">");
         sb.append(menue);
+        sb.append("</div><div class=\"col-xs-10\">");
         sb.append("<form  name=\"createData\" action=\"/sqb-store-map/ServletStoreOutputData\" method=\"post\">");
         for(int i=0;i<list.size()-1;i++){
-            sb.append("<div class='row'><label class='col-xs-2'>"+list.get(i)+"</label> <input type=text name="+list.get(i)+ " class=col-xs-2><br> </div>  ");
+            sb.append("<div class='row'><label class='col-xs-3'>"+list.get(i)+"</label> <input type=text name="+list.get(i)+ " class=col-xs-3><br> </div>  ");
         }
         sb.append("<input type=\"hidden\" name=\"outputName\" value=\""+outputName+"\">\n" +
                 "    <input type=\"hidden\" name=\"nextid\" value=\""+nextid+"\">\n" +"<input type=\"hidden\" name=\"taskid\" value="+taskid+">"+
                         "<input type=\"hidden\" name=\"dataid\" value="+dataid+">"+"<input type=\"hidden\" name=\"inputName\" value="+inputName+">"+
-                "    <input type=submit name=Sure value=Sure  class=\"col-xs-1\" style=\"left:40px\"/><br></form>");
+                "    <input type=submit name=Sure value=Sure  class=\"col-xs-2\" style=\"left:40px\"/><br></form>");
+        sb.append("</div></div");
         return sb.toString();
     }
 
@@ -212,8 +222,10 @@ public class DataProcess {
                 "    <script src=\"js/ace-extra.min.js\"></script>\n" +
                 "    <script src=\"js/respond.min.js\"></script>");
 //        sb.append("<script type=\"text/javascript\" src=\"jquery-1.8.3.js\"></script>");
-        sb.append("<h1>"+taskname+"</h1>");
+        sb.append("<h1 class=center>"+taskname+"</h1>");
+        sb.append("<div class=\"row\"><div class=\"col-xs-2\">");
         sb.append(menue);
+        sb.append("</div><div class=\"col-xs-10\">");
         sb.append("<table border=2><tr>");
         for(int i=0;i<list.size();i++){//画出表头
             sb.append("<th>"+list.get(i)+"</th>");
@@ -232,16 +244,18 @@ public class DataProcess {
             sb.append("<td> <input type=button class=myButton value=check ></td></tr>");
         }
         sb.append("</table>");
-        sb.append("<input type=hidden id=nextid value="+nextid+" >\n" + "<input type=hidden id=taskid value="+taskid+">"+ "<input type=hidden id=outputName value="+outputName+">"+ "<input type=hidden id=tableName value="+dataName+">");
+        sb.append("<input type=hidden id=nextid value="+nextid+" >\n" + "<input type=hidden id=taskid value="+taskid+">"+ "<input type=hidden id=outputName value="+outputName+">"+ "<input type=hidden id=tableName value="+dataName+">"+ "<input type=hidden id=taskname value="+taskname+">");
         sb.append("<script>\n $(\".myButton\").click(function(){\n" +
                 "        var data=$(this).parent().parent().find(\"td\").find(\"input\").val();\n" +
                 "        var nextid=$(\"#nextid\").val();\n" +
                 "        var taskid=$(\"#taskid\").val();\n" +
                 "        var outputName=$(\"#outputName\").val();\n" +
                 "        var tableName=$(\"#tableName\").val();\n" +
-                "        window.location.href='/sqb-store-map/ServletInputData?dataid='+data+\"&nextid=\"+nextid+\"&taskid=\"+taskid+\"&outputName=\"+outputName+\"&tableName=\"+tableName;\n"+
+                "        var taskname=$(\"#taskname\").val();\n" +
+                "        window.location.href='/sqb-store-map/ServletInputData?dataid='+data+\"&nextid=\"+nextid+\"&taskid=\"+taskid+\"&outputName=\"+outputName+\"&tableName=\"+tableName+\"&taskname=\"+taskname;\n"+
                 "    });\n" +
                 "</script>");
+        sb.append("</div></div");
         return sb.toString();
     }
 
@@ -271,6 +285,7 @@ public class DataProcess {
 
 
     }
+
     /**
      * 根据table的名字找到某个数据库表中的所有外键信息
      * @param key
@@ -296,11 +311,11 @@ public class DataProcess {
         ProcessBpmn processBpmn=new ProcessBpmn();
         Map<String,String> map = processBpmn.getTaskIdAndName();
         StringBuffer sb =new StringBuffer();
-        sb.append("<nav>");
+        sb.append("<ul style=\"left-margin:0 ;left-padding:0 ; list-style-type:none\">");
         for(Map.Entry<String,String> entry:map.entrySet()){
-            sb.append("<a href=\"hello.jsp?id="+entry.getKey()+"&condition=Yes\">"+entry.getValue()+"</a> ");
+            sb.append("<li><a href=\"hello.jsp?id="+entry.getKey()+"&condition=Yes\">"+entry.getValue()+"</a></li> ");
         }
-        sb.append("</nav>");
+        sb.append("</ul>");
         menue=sb.toString();
         return menue;
     }

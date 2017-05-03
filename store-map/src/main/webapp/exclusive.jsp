@@ -14,9 +14,15 @@
    <script type="text/javascript" src="jquery-1.8.3.js"></script>
 </head>
 <body>
-<label><input name="condition" type="radio" value="Yes" />Yes </label>
-<label><input name="conditon" type="radio" value="No" />No </label><br>
-<button onclick="exclusive()"  width="100px" height="40px">next</button>
+<%--<label><input name="condition" type="radio" value="Yes" />Yes </label>--%>
+<%--<label><input name="conditon" type="radio" value="No" />No </label><br>--%>
+<%--<button onclick="exclusive()"  width="100px" height="40px">next</button>--%>
+
+<div class="controls">
+   <input id='radio-1' type="radio" name='condition' value ="Yes" checked='checked' /><label for="radio-1">Yes</label>
+   <input id='radio-2' type="radio" name='condition' value = "No"/><label for="radio-2">No</label><br>
+   <button onclick="exclusive()"  width="100px" height="40px">next</button>
+</div>
 
 <script>
     function exclusive() {

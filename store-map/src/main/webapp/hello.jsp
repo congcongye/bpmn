@@ -16,13 +16,14 @@
 <%
     String startEventId =request.getParameter("id");
     String condition =request.getParameter("condition");
-    if(startEventId==null||startEventId.equals("")){
-        startEventId="StartEvent_1";
-        condition="Yes";
-    }
     ProcessBpmn pb =new ProcessBpmn();
     DataProcess dp =new DataProcess();
-//    String menu =dp.getMenu();
+    String tempId=pb.getStartEvent().get(0);
+    if(startEventId==null||startEventId.equals("")){
+        startEventId=tempId;
+        condition="Yes";
+    }
+
     Map<String,Object> map = pb.getNext(startEventId,condition);
     if(map!=null) {
         String type = (String) map.get("type");
