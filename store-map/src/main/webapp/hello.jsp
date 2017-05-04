@@ -65,6 +65,7 @@
             String state =pb.getStateByTaskId(preTaskId);
             List<HashMap<String,Object>> tableValues=dp.getValueByTableName(tableName,label,state);
             String result=dp.drawTableData(tableValues,label,nextId,startEventId,tableName,taskName);
+
         %>
         <script>
              myWindow =window.open('','','width=300,height=600')
